@@ -2,7 +2,9 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"main/search"
+	urlrequest "main/urlRequest"
 )
 
 func main() {
@@ -12,5 +14,10 @@ func main() {
 	flag.StringVar(&url, "u", "", "specicify a url to make a request to that url")
 	flag.Parse()
 
-	search.MakeSearchRequest(string(searchQuery))
+	search.MakeSearchRequest(searchQuery)
+	error := urlrequest.MakeUrlRequest(url)
+
+	if error != nil {
+		fmt.Printf("Error occured\n%s", error)
+	}
 }
