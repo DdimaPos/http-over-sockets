@@ -34,7 +34,7 @@ func MakeSearchRequest(query string) error {
 		"sec-ch-ua-mobile: ?1\r\n"+
 		"sec-ch-ua-platform: \"Android\"\r\n"+
 		"sec-fetch-dest: document\r\n"+
-		"sec-fetch-mode: navigate"+
+		"sec-fetch-mode: navigate\r\n"+
 		"sec-fetch-site: none\r\n"+
 		"sec-fetch-user: ?1\r\n"+
 		"upgrade-insecure-requests: 1\r\n"+
