@@ -4,10 +4,9 @@ import (
 	"bufio"
 	"crypto/tls"
 	"fmt"
+	"golang.org/x/net/html"
 	"main/htmlParsing"
 	"net/url"
-
-	"golang.org/x/net/html"
 )
 
 func MakeSearchRequest(query string) error {
