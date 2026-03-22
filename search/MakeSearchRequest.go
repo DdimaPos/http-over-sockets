@@ -4,9 +4,11 @@ import (
 	"bufio"
 	"crypto/tls"
 	"fmt"
-	"golang.org/x/net/html"
 	"main/htmlParsing"
+	"main/printing"
 	"net/url"
+
+	"golang.org/x/net/html"
 )
 
 func MakeSearchRequest(query string) error {
@@ -19,7 +21,7 @@ func MakeSearchRequest(query string) error {
 	connection, error := tls.Dial("tcp", "html.duckduckgo.com:443", &tls.Config{})
 
 	if error != nil {
-		return fmt.Errorf("[ERROR] could not open a connection: \"%v\"\n", error)
+		return fmt.Errorf(printing.Red+"[ERROR] could not open a connection: \"%v\"\n"+printing.Reset, error)
 	}
 	defer connection.Close()
 
@@ -43,7 +45,7 @@ func MakeSearchRequest(query string) error {
 	response, _, err := bufio.NewReader(connection).ReadLine()
 
 	if err != nil {
-		return fmt.Errorf("[ERROR] could not read the respose status: \"%v\"\n", error)
+		return fmt.Errorf(printing.Red+"[ERROR] could not read the respose status: \"%v\"\n"+printing.Reset, error)
 	}
 
 	fmt.Println(string(response))
@@ -51,14 +53,19 @@ func MakeSearchRequest(query string) error {
 	htmlNodes, error := html.Parse(connection)
 
 	if error != nil {
-		return fmt.Errorf("[ERROR] could not PARSE the response: \"%v\"\n", error)
+		return fmt.Errorf(printing.Red+"[ERROR] could not PARSE the response: \"%v\"\n"+printing.Reset, error)
 	}
 
 	var searchResults = parsing.TraverseTree(htmlNodes)
 
 	for i := range searchResults {
 		result := searchResults[i]
-		fmt.Printf("%d. Title: %s\nLink: %s\n\n", i+1, result.Title, result.Url)
+		fmt.Printf(printing.Bold+"%d."+
+			printing.Green+"Title: "+
+			printing.Yellow+"%s\n"+
+			printing.Green+"Link: "+
+			printing.Cyan+"%s\n\n"+
+			printing.Reset, i+1, result.Title, result.Url)
 	}
 
 	return pickSearchResult(searchResults)

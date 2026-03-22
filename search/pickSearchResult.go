@@ -2,6 +2,7 @@ package search
 
 import (
 	"fmt"
+	"main/printing"
 	"main/structs"
 	urlrequest "main/urlRequest"
 )
@@ -12,7 +13,7 @@ func pickSearchResult(searchResults []structs.SearchResult) error {
 	fmt.Scanln(&variant)
 
 	if variant > len(searchResults) || variant <= 0 {
-		fmt.Println("[WARNING] Picked no variant or not from the list")
+		fmt.Println(printing.Yellow + "[WARNING] Picked no variant or not from the list" + printing.Reset)
 		return nil
 	}
 

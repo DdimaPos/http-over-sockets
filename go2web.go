@@ -17,12 +17,12 @@ func main() {
 
 	err = search.MakeSearchRequest(searchQuery)
 	if err != nil {
-		fmt.Printf("Error occured\n%s", err)
+		fmt.Printf("%s\n", err)
 	}
 
 	err = urlrequest.MakeUrlRequest(url, 0)
 
 	if err != nil {
-		fmt.Printf("Error occured\n%s", err)
+		fmt.Printf("%s\n", err)
 	}
 }
