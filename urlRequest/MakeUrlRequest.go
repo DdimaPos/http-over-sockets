@@ -1,10 +1,13 @@
 package urlrequest
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	parsing "main/htmlParsing"
 	"main/printing"
 	"net/url"
+	"strings"
 )
 
 func MakeUrlRequest(passedUrl string, depth int) error {
@@ -29,6 +32,10 @@ func MakeUrlRequest(passedUrl string, depth int) error {
 	}
 
 	headers, body, err := splitHTTPResponse(rawResponse)
+	isChunked := strings.Contains(strings.ToLower(string(headers)), "transfer-encoding: chunked")
+	if isChunked {
+		body = dechunk(body)
+	}
 
 	if err != nil {
 		return err
@@ -39,5 +46,22 @@ func MakeUrlRequest(passedUrl string, depth int) error {
 		return MakeUrlRequest(newLocation, depth+1)
 	}
 
-	return parsing.PrettyPrintHtml(body)
+	contentType := getContentType(headers)
+
+	if contentType == "html" {
+		return parsing.PrettyPrintHtml(body)
+	}
+
+	if contentType == "json" {
+		var prettyJSON bytes.Buffer
+		err := json.Indent(&prettyJSON, body, "", "	")
+
+		if err != nil {
+			return fmt.Errorf(printing.Red+"[ERROR] Could not format the json:\n%s"+printing.Reset, err)
+		}
+
+		fmt.Println(prettyJSON.String())
+	}
+
+	return nil
 }
