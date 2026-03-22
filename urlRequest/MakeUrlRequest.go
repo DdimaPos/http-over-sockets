@@ -3,12 +3,13 @@ package urlrequest
 import (
 	"fmt"
 	parsing "main/htmlParsing"
+	"main/printing"
 	"net/url"
 )
 
 func MakeUrlRequest(passedUrl string, depth int) error {
 	if depth > 5 {
-		return fmt.Errorf("[ERROR] Maximum redirect depth exceeded\n")
+		return fmt.Errorf(printing.Red + "[ERROR] Maximum redirect depth exceeded\n" + printing.Reset)
 	}
 
 	urlObj, err := url.Parse(passedUrl)
@@ -18,10 +19,15 @@ func MakeUrlRequest(passedUrl string, depth int) error {
 	}
 
 	if err != nil {
-		return fmt.Errorf("[ERROR] Could not parse the url: %s\n", err)
+		return fmt.Errorf(printing.Red+"[ERROR] Could not parse the url: %s\n"+printing.Reset, err)
 	}
 
-	rawResponse, _ := executeRequest(urlObj)
+	rawResponse, err := executeRequest(urlObj)
+
+	if err != nil {
+		return err
+	}
+
 	headers, body, err := splitHTTPResponse(rawResponse)
 
 	if err != nil {

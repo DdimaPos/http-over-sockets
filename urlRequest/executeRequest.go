@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"fmt"
 	"io"
+	"main/printing"
 	"net"
 	"net/url"
 )
@@ -31,7 +32,7 @@ func executeRequest(u *url.URL) ([]byte, error) {
 	}
 
 	if err != nil {
-		return nil, fmt.Errorf("Could not open a tcp connection with %s", u.Host)
+		return nil, fmt.Errorf(printing.Red+"[ERROR] Could not open a tcp connection with %s:\n%s"+printing.Reset, u.Host, err)
 	}
 	defer conn.Close()
 
