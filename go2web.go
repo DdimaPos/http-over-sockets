@@ -15,7 +15,7 @@ func main() {
 	flag.Parse()
 
 	search.MakeSearchRequest(searchQuery)
-	error := urlrequest.MakeUrlRequest(url)
+	error := urlrequest.MakeUrlRequest(url, 0)
 
 	if error != nil {
 		fmt.Printf("Error occured\n%s", error)

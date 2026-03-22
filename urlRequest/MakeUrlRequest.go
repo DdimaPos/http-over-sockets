@@ -10,14 +10,18 @@ import (
 	"net/url"
 )
 
-func MakeUrlRequest(passedUrl string) error {
-	var fullPath string
-	var err error
+func MakeUrlRequest(passedUrl string, depth int) error {
+	if depth > 5 {
+		return fmt.Errorf("[ERROR] Maximum redirect depth exceeded")
+	}
 
 	if len([]byte(passedUrl)) == 0 {
 		fmt.Println("[INFO] No url for direct query provided")
 		return nil
 	}
+
+	var fullPath string
+	var err error
 
 	urlObj, err := url.Parse(passedUrl)
 
@@ -52,7 +56,6 @@ func MakeUrlRequest(passedUrl string) error {
 	if err != nil {
 		return fmt.Errorf("Could not open a tcp connection with %s", hostname)
 	}
-
 	defer conn.Close()
 
 	request := fmt.Sprintf("GET %s HTTP/1.1\r\n"+
@@ -73,22 +76,18 @@ func MakeUrlRequest(passedUrl string) error {
 	headers := rawResponse[:splitIndex]
 	body := rawResponse[splitIndex+4:]
 
-	// if hasRedirectStatus(headers) {
-	//
-	// 	newLocation := getRedirectLocation(headers)
-	//
-	// 	MakeUrlRequest(urlObj.Scheme + "://" + newLocation + fullPath)
-	//
-	// 	return nil
-	// }
-
-	fmt.Print("Headers:\n" + string(headers))
+	if hasRedirectStatus(headers) {
+		newLocation := getRedirectLocation(headers)
+		conn.Close()
+		return MakeUrlRequest(newLocation, depth+1)
+	}
 
 	prettyHtml, err := html2text.FromString(string(body), html2text.Options{PrettyTables: true})
 
 	if err != nil {
-		return fmt.Errorf("Could not pretty print the html")
+		return fmt.Errorf("Could not convert html to text")
 	}
+
 	fmt.Print(prettyHtml)
 
 	return nil
