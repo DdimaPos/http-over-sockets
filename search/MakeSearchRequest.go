@@ -12,7 +12,6 @@ import (
 func MakeSearchRequest(query string) error {
 
 	if len([]byte(query)) == 0 {
-		fmt.Println("[INFO] No search query provided")
 		return nil
 	}
 	query = url.QueryEscape(url.QueryEscape(query))
@@ -62,5 +61,5 @@ func MakeSearchRequest(query string) error {
 		fmt.Printf("%d. Title: %s\nLink: %s\n\n", i+1, result.Title, result.Url)
 	}
 
-	return nil
+	return pickSearchResult(searchResults)
 }

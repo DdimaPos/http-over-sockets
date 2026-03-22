@@ -8,13 +8,12 @@ import (
 
 func MakeUrlRequest(passedUrl string, depth int) error {
 	if depth > 5 {
-		return fmt.Errorf("[ERROR] Maximum redirect depth exceeded")
+		return fmt.Errorf("[ERROR] Maximum redirect depth exceeded\n")
 	}
 
 	urlObj, err := url.Parse(passedUrl)
 
 	if len([]byte(passedUrl)) == 0 {
-		fmt.Println("[INFO] No url for direct query provided")
 		return nil
 	}
 
